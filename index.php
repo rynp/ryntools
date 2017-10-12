@@ -304,45 +304,10 @@
 		} );
 		
 		function getStockData(ticker){
-			/*
-			 Access-Control-Allow-Orig...	
-			*
-			Connection	keep-alive
-			Content-Encoding	gzip
-			Content-Type	application/json
-			Date	Fri, 06 Oct 2017 06:30:09 GMT
-			Server	nginx/1.10.3 (Ubuntu)
-			Transfer-Encoding	chunked
-			Via	1.1 phmdwf.usautoparts.com (http_scan_byf/3.3.1)
-			X-Cache	MISS from phmdwf.usautoparts.com
-			X-Powered-By	Express
-			
-			Accept	 application/json, text/javascript, * /*; q=0.01
-			Accept-Encoding	gzip, deflate
-			Accept-Language	en-US,en;q=0.5
-			Connection	keep-alive
-			Host	api.pse.tools
-			Origin	http://pse.tools
-			Referer	http://pse.tools/chart/APX
-			User-Agent	Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0
-			
-			//http://api.pse.tools/api/stock/v2/APX
-			*/
 			$.ajax({
 				url: "/ajax.php?action=getdata&symbol="+ticker,
 				dataType: 'json',
 				xhrFields: { withCredentials: true}
-				/*
-				,beforeSend: function( xhr ) {
-					//xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-				}
-				,accepts: {
-					'Accept': 'application/json, text/javascript, * /*; q=0.01',
-					'Accept-Encoding': 'gzip: deflate',
-					'Accept-Language': 'en-US,en;q=0.5',
-					'Connection': 'keep-alive',
-					'User-Agent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0'
-				}*/
 				
 			}).done(function(jsn) {
 				var dRow = '<tr class="datarow-'+jsn.symbol+'" rowspan=2>';
@@ -370,30 +335,8 @@
 				$('#listContent').prepend(dRow);
 			});
 		}
-		
-		function formatCurrency(n, currency) {
-			return currency + " " + n.toString().toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-		}
 	});
 	
 	
 </script>
 </html>
-
-<script>
-/*
-var acc = document.getElementsByClassName("accordion");
-var i;
-
-for (i = 0; i < acc.length; i++) {
-	acc[i].onclick = function() {
-		this.classList.toggle("active");
-		var panel = this.nextElementSibling;
-		if (panel.style.maxHeight){
-			panel.style.maxHeight = null;
-		} else {
-			panel.style.maxHeight = panel.scrollHeight + "px";
-		} 
-	};
-}*/
-</script>
