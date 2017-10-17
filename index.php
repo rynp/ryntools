@@ -9,7 +9,9 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://jonmiles.github.io/bootstrap-treeview/js/bootstrap-treeview.js"></script>
 	<style>
-		html, body, #content { height: 98%; }
+		@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800);
+		
+		html, body, #content { height: 98%; font-family: Open Sans; }
 		#content .content, .sidenav { height: 100% }
 
 		/* Remove the navbar's default margin-bottom and rounded borders */ 
@@ -110,6 +112,23 @@
 			max-width: 92px;
 		}
 		
+		th {
+			text-align: center;
+		}
+		
+		th.data-input {
+			width: 8%;
+		}
+		
+		td.align-center{
+			text-align: center;
+		}
+		
+		td.align-right{
+			text-align: right;
+		}
+		
+		
 		@media only screen and (max-width: 800px) {
     
 			/* Force table to not be like tables anymore */
@@ -118,12 +137,17 @@
 			#no-more-tables tbody, 
 			#no-more-tables th, 
 			#no-more-tables td, 
-			#no-more-tables tr { 
+			#no-more-tables tr {
+				font-family: Open Sans;
 				display: block; 
 			}
 		 
 			/* Hide table headers (but not display: none;, for accessibility) */
-			#no-more-tables thead tr { 
+			#no-more-tables thead th {
+				text-align: center;
+			}
+			
+			#no-more-tables thead tr {
 				position: absolute;
 				top: -9999px;
 				left: -9999px;
@@ -207,20 +231,16 @@
 						<thead class="cf">
 							<tr>
 								<th>Ticker</th>
-								<th class="numeric">Price</th>
-								<th class="numeric">Open</th>
-								<th class="numeric">High</th>
-								<th class="numeric">Low</th>
-								<th class="numeric">Volume</th>
-								<th class="numeric">Boardlot</th>
-								<th class="numeric">Cost</th>
-								<th class="numeric">Shares</th>
-								<th class="numeric">Target1</th>
-								<th class="numeric">Sale Cost1</th>
-								<th class="numeric">Gain/Loss1</th>
-								<th class="numeric">Target2</th>
-								<th class="numeric">Sale Cost2</th>
-								<th class="numeric">Gain/Loss2</th>
+								<th >Price</th>
+								<th >Boardlot</th>
+								<th >Shares</th>
+								<th >Cost to Buy</th>
+								<th class="data-input">Target1</th>
+								<th >Sale Cost1</th>
+								<th >Gain/Loss1</th>
+								<th class="data-input">Target2</th>
+								<th >Sale Cost2</th>
+								<th >Gain/Loss2</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -320,25 +340,21 @@
 				
 			}).done(function(jsn) {
 				var dRow = '<tr class="datarow-'+jsn.symbol+'" rowspan=2>';
-				dRow += '<td class="ticker center">'+jsn.symbol+'</td>';
-				dRow += '<td class="price numeric">'+jsn.last+'</td>';
-				dRow += '<td class="open numeric">'+jsn.open+'</td>';
-				dRow += '<td class="high numeric">'+jsn.high+'</td>';
-				dRow += '<td class="low numeric">'+jsn.low+'</td>';
-				dRow += '<td class="volume numeric">'+jsn.volume+'</td>';
-				dRow += '<td class="b-lot numeric">'+jsn.boardlot+'</td>';
-				dRow += '<td class="cost numeric">'+formatter.format(jsn.average_cost)+'</td>';
-				dRow += '<td class="shares numeric">'+jsn.shares+'</td>';
-				dRow += '<td class="target1"><input type="text" class="form-control target" id="target1" value="'+jsn.sell[0].price+'"></td>';
-				dRow += '<td class="salecost1 numeric">'+formatter.format(jsn.sell[0].sellcost)+'</td>';
-				dRow += '<td class="gain1 numeric">'+formatter.format(jsn.sell[0].sellgain)+'</td>';
-				dRow += '<td class="target2"><input type="text" class="form-control target" id="target2" value="'+jsn.sell[1].price+'"></td>';
-				dRow += '<td class="salecost2 numeric">'+formatter.format(jsn.sell[1].sellcost)+'</td>';
-				dRow += '<td class="gain2 numeric">'+formatter.format(jsn.sell[1].sellgain)+'</td>';
-				dRow += '<td class="action"><a href="#" class="viewInfo" infoname="'+jsn.symbol+'"><span class="glyphicon glyphicon-zoom-in"></span></a></td>';
+				dRow += '<td class="ticker align-center">'+jsn.symbol+'</td>';
+				dRow += '<td class="price align-center">'+jsn.last+'</td>';
+				dRow += '<td class="b-lot align-center">'+jsn.boardlot+'</td>';
+				dRow += '<td class="shares align-center">'+jsn.shares+'</td>';
+				dRow += '<td class="cost align-center">'+formatter.format(jsn.average_cost)+'</td>';
+				dRow += '<td class="target1 align-right"><input type="text" class="form-control target" id="target1" value="'+jsn.sell[0].price+'"></td>';
+				dRow += '<td class="salecost1 align-center">'+formatter.format(jsn.sell[0].sellcost)+'</td>';
+				dRow += '<td class="gain1 align-center">'+formatter.format(jsn.sell[0].sellgain)+'</td>';
+				dRow += '<td class="target2 align-right"><input type="text" class="form-control target" id="target2" value="'+jsn.sell[1].price+'"></td>';
+				dRow += '<td class="salecost2 align-center">'+formatter.format(jsn.sell[1].sellcost)+'</td>';
+				dRow += '<td class="gain2 align-center">'+formatter.format(jsn.sell[1].sellgain)+'</td>';
+				dRow += '<td class="action align-center"><a href="#" class="viewInfo" infoname="'+jsn.symbol+'"><span class="glyphicon glyphicon-zoom-in"></span></a></td>';
 				dRow += '</tr>';
 				dRow += '<tr class="datarow-'+jsn.symbol+'" id="inforow-'+jsn.symbol+'" style="display: none">';
-				dRow += '<td colspan=15 ><div><iframe style="height: 384px; width: 100%"src="http://www.arzgethalm.com/8675b310-c1b8-42cb-a0b7-afd7e594e6af/index.php?api_key=9583e927-319e-47ad-ba3b-c73cfc9958a6"></iframe></div></td>';
+				dRow += '<td colspan="12" class="align-center" ><div><iframe style="height: 384px; width: 100%"src="http://www.arzgethalm.com/8675b310-c1b8-42cb-a0b7-afd7e594e6af/index.php?api_key=9583e927-319e-47ad-ba3b-c73cfc9958a6"></iframe></div></td>';
 				dRow += '<td ><div id="inforow-'+jsn.symbol+'" style="display: none"></div></td>';
 				dRow += '</tr>';
 				$('#listContent').prepend(dRow);
