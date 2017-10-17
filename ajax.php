@@ -1,30 +1,36 @@
 <?php
 switch($_GET['action']){
     case('getdata'):
-        //exit( "http://api.pse.tools/api/stock/v2/".$_GET['symbol'] );
-        //step1
-        $cSession = curl_init(); 
-        //step2
         $url = "http://api.pse.tools/api/stock/v2/".$_GET['symbol'].'?ts='.time();
+        /*
+        $cSession = curl_init(); 
         curl_setopt($cSession,CURLOPT_URL,$url);
         curl_setopt($cSession,CURLOPT_HEADER, 0);
         curl_setopt($cSession,CURLOPT_HTTPHEADER, array("Cache-Control: no-cache"));
         curl_setopt($cSession,CURLOPT_RETURNTRANSFER,1);
         curl_setopt($cSession,CURLOPT_FRESH_CONNECT, 1);
-        
-        //step3
         $result=curl_exec($cSession);
-        //step4
         curl_close($cSession);
-        //step5
-        //echo $result;
-        
         $test = json_decode($result);
-        //$test = getTargets($test);
-        //echo json_encode($test);
-        
         $stock = new Stock($test, 20000);
         echo json_encode($stock);
+        */
+        
+        $stock = file_get_contents($url);
+        $stock = json_decode($stock);
+        unset($stock->bid_ask);
+        //echo "<pre>",print_r($stock);
+        
+        $stock = new Stock($stock, 20000);
+        echo json_encode($stock);
+        //echo "<pre>",print_r($stock);
+        
+        
+        exit;
+        //$stock = new Stock($stock, 20000);
+        //echo json_encode($stock);
+        //$homepage = json_decode($test);
+        //echo "<pre>",print_r($homepage);
         //var_dump($test);
         //echo "<pre>",print_r($stock);
         
@@ -70,13 +76,13 @@ class Stock
             case($this->last>=0.0100 && $this->last<=0.0490):
                 $this->boardlot = 100000*1; break;
             case($this->last>=0.0500 && $this->last<=0.4950):
-                $this->boardlot = 10000*1; break;
+                $this->boardlot = 10000*1;  break;
             case($this->last>=0.5000 && $this->last<=4.9900):
                 $this->boardlot = 1000*1; break;
             case($this->last>=5.0000 && $this->last<=49.9500):
                 $this->boardlot = 100*1; break;
             case($this->last>=50.0000 && $this->last<=999.5000):
-                $blot = 10*1; break;
+                $this->boardlot = 10*1; break;
             case$this->boardlot($this->last>=1000.0000):
                 $this->boardlot = 5*1; break;
             default:
@@ -89,15 +95,21 @@ class Stock
     private function getMaxShares()
     {   
         $tmpCost = $tmpBlot = $fCostm = $fStock = $ctr = 0;
+        $limit = 100;
+        //exit('ryan --> '.$this->boardlot);
         while($tmpCost<=$this->buypower){
             $tmpCost+= $this->last*$this->boardlot;
             $tmpBlot+= ($this->boardlot)*1;
+            
             if($tmpCost<=$this->buypower){
                 $this->gross = $tmpCost;
                 $this->shares = $tmpBlot;
-                //$this->gross.' - '.$this->shares;
+                //echo $this->gross.' - '.$this->shares."<br>";
             }
             $ctr++;
+            if($ctr>$limit){
+                break;
+            }
         }
     }
     
