@@ -1,4 +1,41 @@
 <?php
+function gz_get_contents($path){
+    $file = @gzopen($path, 'rb', false);
+    if($file) {
+        $data = '';
+        while (!gzeof($file)) {
+            $data .= gzread($file, 1024);
+        }
+        gzclose($file);
+    }
+    return $data;
+}
+
+function checkStockExists($symbol, $arrayObj){
+    if(is_array($arrayObj)){
+        foreach($arrayObj as $obj){
+            if($obj->symbol==$symbol){
+                return $obj;
+            }
+        }
+    }
+    return false;
+}
+
+$stockData = gz_get_contents("http://api.pse.tools/api/stocks?ts='".time());
+$stockData = json_decode($stockData);
+
+/*
+$test = checkStockExists('2GO',$stockData->data);
+foreach($test as $txt => $val){
+    echo $txt. ' == '.$val.'<br>'; 
+}
+//echo "<pre>",print_r($stockData);
+echo "<pre>",print_r($test);
+exit;*/
+//$stock = new Stock($test, 20000);
+//echo json_encode($stock);
+
 $ticker['Banks'][] = 'AUB';
 $ticker['Banks'][] = 'BDO';
 $ticker['Banks'][] = 'BKR';
@@ -246,7 +283,18 @@ foreach($ticker as $type=>$syms){
     if(is_array($syms) && !empty($syms)){
         $nds = array();
         foreach($syms as $idx => $symbol){
-            $nds[] = '{"text": "'.$symbol.'", "href": "#'.$symbol.'", "type":"symbol"}';
+            $sData = checkStockExists($symbol, $stockData->data);
+            if($sData){
+                $stockMoreInfo = array();
+                $removeInfo = array('symbol','difference');
+                foreach($sData as $txt=>$val ){
+                    if(!in_array($txt, $removeInfo)){
+                        $stockMoreInfo[] = '{"text":"'.ucwords($txt).'", "tags":[\''.addslashes($val).'\']}';    
+                    }
+                }
+                //echo "<pre>",print_r($stockMoreInfo);
+                $nds[] = '{"text": "'.$symbol.'", "href": "#'.$symbol.'", "type":"symbol", "tags":["'.$sData->difference.'"], "nodes":['.implode(',',$stockMoreInfo).']}';
+            }
         }
         $jsn.=', "nodes":['.implode(',',$nds).']';
     }
@@ -254,6 +302,8 @@ foreach($ticker as $type=>$syms){
     $tree[] = $jsn;
 }
 
+//echo 'Ticker Count: '.count($ticker2);
+
 $jsnMenu = '['.implode(',',$tree).']';
-//echo "<pre>",print_r($test);
+//echo "<pre>",print_r($jsnMenu);
 ?>

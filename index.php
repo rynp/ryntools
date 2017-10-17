@@ -189,12 +189,12 @@
   
 <div id="content" class="container-fluid">    
 	<div class="row content">
-		<div class="col-sm-2 sidenav">
+		<div class="col-sm-3 sidenav">
 			<div class="ticker-menu-wrapper">
 				<div id="treeview2" ></div>
 			</div>
 		</div>
-		<div class="col-sm-10 text-left"> 
+		<div class="col-sm-9 text-left"> 
 			<!-- h1>Welcome</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 			
@@ -284,18 +284,27 @@
 			// the default value for minimumFractionDigits depends on the currency
 			// and is usually already 2
 		  });
+		var selected = [];
 		var defaultData = <?php echo $jsnMenu; ?>;
 		var initSelectableTree = function() {
           return $('#treeview2').treeview({
             data: defaultData,
+			showTags: true,
 			levels: 1,
             onNodeSelected: function(event, node) {
 				if(node.type=='symbol'){
-					getStockData(node.text);
+					//alert('pasok' + jQuery.inArray( node.text, selected));
+					if( $.inArray( node.text, selected)!=-1 ){
+						//alert('Existing!');
+					}else{
+						getStockData(node.text);
+						selected.push(node.text);
+					}
 				}
             }
           });
         };
+		
         var $selectableTree = initSelectableTree();
 		
 		$(document).on('click', '.viewInfo', function(){
@@ -328,8 +337,8 @@
 				dRow += '<td class="gain2 numeric">'+formatter.format(jsn.sell[1].sellgain)+'</td>';
 				dRow += '<td class="action"><a href="#" class="viewInfo" infoname="'+jsn.symbol+'"><span class="glyphicon glyphicon-zoom-in"></span></a></td>';
 				dRow += '</tr>';
-				dRow += '<tr class="datarow-'+jsn.symbol+'">';
-				dRow += '<td colspan=17><div id="inforow-'+jsn.symbol+'" style="display: none"><iframe style="height: 384px; width: 100%"src="http://www.arzgethalm.com/8675b310-c1b8-42cb-a0b7-afd7e594e6af/index.php?api_key=9583e927-319e-47ad-ba3b-c73cfc9958a6"></iframe></div></td>';
+				dRow += '<tr class="datarow-'+jsn.symbol+'" id="inforow-'+jsn.symbol+'" style="display: none">';
+				dRow += '<td colspan=15 ><div><iframe style="height: 384px; width: 100%"src="http://www.arzgethalm.com/8675b310-c1b8-42cb-a0b7-afd7e594e6af/index.php?api_key=9583e927-319e-47ad-ba3b-c73cfc9958a6"></iframe></div></td>';
 				dRow += '<td ><div id="inforow-'+jsn.symbol+'" style="display: none"></div></td>';
 				dRow += '</tr>';
 				$('#listContent').prepend(dRow);
